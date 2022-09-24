@@ -124,6 +124,19 @@ public final class BLiveDanmakuClient {
     }
 
     /**
+     * 移除 Handler
+     * @param handler Handler 对象
+     * @return BLiveDanmakuClient Chain
+     */
+    public BLiveDanmakuClient removeHandler(Handler handler) {
+        handlers.remove(handler);
+
+        return this;
+
+    }
+
+
+    /**
      * 添加 Filter
      * <b>Filter 没有先后顺序</b>
      *
