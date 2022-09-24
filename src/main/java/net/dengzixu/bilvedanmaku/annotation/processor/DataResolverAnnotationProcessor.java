@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class DataResolverAnnotationProcessor {
-    private static final String PACKAGE_NAME = "net.dengzixu";
+    private static final String PACKAGE_NAME = "net.dengzixu.bilvedanmaku";
 
     public static final Map<Command, Class<?>> COMMAND_MAP = new HashMap<>();
 
