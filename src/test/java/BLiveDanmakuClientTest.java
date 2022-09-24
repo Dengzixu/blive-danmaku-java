@@ -1,6 +1,6 @@
-import net.dengzixu.BLiveDanmakuClient;
-import net.dengzixu.enums.Message;
-import net.dengzixu.message.content.DanmuContent;
+import net.dengzixu.bilvedanmaku.BLiveDanmakuClient;
+import net.dengzixu.bilvedanmaku.enums.Message;
+import net.dengzixu.bilvedanmaku.message.content.DanmuContent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
