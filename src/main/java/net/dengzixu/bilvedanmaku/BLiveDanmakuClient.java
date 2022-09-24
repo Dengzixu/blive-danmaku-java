@@ -200,11 +200,15 @@ public final class BLiveDanmakuClient {
                         }));
 
                     } catch (Exception e) {
-                        logger.error("[直播间: {}] 发生未知错误。\nPacket:{}\n原始数据(Base64):{}\n原始数据(Bytes):{}",
+//                        logger.error("[直播间: {}] 发生未知错误。\nPacket:{}\n原始数据(Base64):{}\n原始数据(Bytes):{}",
+//                                roomID,
+//                                packet,
+//                                Base64.encodeBase64String(bytes.toByteArray()),
+//                                Hex.encodeHexString(bytes.toByteArray()),
+//                                e);
+                        logger.error("[直播间: {}] 发生未知错误。\nPacket:{}",
                                 roomID,
                                 packet,
-                                Base64.encodeBase64String(bytes.toByteArray()),
-                                Hex.encodeHexString(bytes.toByteArray()),
                                 e);
                     }
                 });
