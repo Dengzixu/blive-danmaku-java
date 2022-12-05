@@ -77,8 +77,18 @@ public class BodyResolver {
                     final Map<?, ?> messageMap = new ObjectMapper().readValue(message, new TypeReference<>() {
                     });
 
+                    // 2022-12-06 对 DANMU_MSG 进行临时修改
+                    String CMD = (String) messageMap.get("cmd");
+
+                    if (CMD.contains("DANMU_MSG")) {
+                        CMD = "DANMU_MSG";
+                    }
+
+                    System.out.println("B" + CMD);
+
+
                     // 获取对应的 Resolver
-                    Class<?> clazz = DataResolverAnnotationProcessor.COMMAND_MAP.get(Command.valueOf((String) messageMap.get("cmd")));
+                    Class<?> clazz = DataResolverAnnotationProcessor.COMMAND_MAP.get(Command.valueOf(CMD));
 
                     // 判断是否存在对应的 Resolver
                     if (null != clazz) {
@@ -95,7 +105,7 @@ public class BodyResolver {
                                 userFaceMetadata,
                                 fansMedalMetadata,
                                 timestampMetadata,
-                                messageContent instanceof NullContent ? Message._NULL : Message.valueOf((String) messageMap.get("cmd")),
+                                messageContent instanceof NullContent ? Message._NULL : Message.valueOf(CMD),
                                 messageContent);
                     } else {
                         logger.warn("找不到[{}]对应的 Resolver", messageMap.get("cmd"));
