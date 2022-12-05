@@ -1,0 +1,44 @@
+package net.dengzixu.bilvedanmaku.enums;
+
+/**
+ * 消息类型
+ * 消息类型绝大多数与 Command 相同
+ * 以下划线开头的为自定义的消息类型
+ */
+public enum Message {
+    DANMU_MSG,
+    SEND_GIFT,
+    GUARD_BUY,
+    COMBO_SEND,
+    ENTRY_EFFECT,
+    INTERACT_WORD,
+    WATCHED_CHANGE,
+    ROOM_BLOCK_MSG,
+
+    ROOM_REAL_TIME_MESSAGE_UPDATE,
+    POPULARITY_RED_POCKET_NEW,
+    HOT_RANK_SETTLEMENT_V2,
+    LIVE_INTERACTIVE_GAME,
+    COMMON_NOTICE_DANMAKU,
+    HOT_RANK_SETTLEMENT,
+    STOP_LIVE_ROOM_LIST,
+    HOT_RANK_CHANGED_V2,
+    LIKE_INFO_V3_UPDATE,
+    HOT_RANK_CHANGED,
+    ONLINE_RANK_COUNT,
+    DANMU_AGGREGATION,
+    ONLINE_RANK_TOP3,
+    HOT_ROOM_NOTIFY,
+    USER_TOAST_MSG,
+    ONLINE_RANK_V2,
+    WIDGET_BANNER,
+    NOTICE_MSG,
+    PREPARING,
+
+    _NULL,
+    _RAW,
+    _POPULAR,
+    _AUTH_SUCCESS,
+
+    UNKNOWN
+}

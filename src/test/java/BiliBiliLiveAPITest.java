@@ -1,4 +1,4 @@
-import net.dengzixu.api.bilibili.live.BiliBiliLiveAPI;
+import net.dengzixu.bilvedanmaku.api.bilibili.live.BiliBiliLiveAPI;
 import org.junit.jupiter.api.Test;
 
 public class BiliBiliLiveAPITest {

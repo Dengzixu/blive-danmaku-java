@@ -1,9 +1,9 @@
-import net.dengzixu.api.bilibili.live.BiliBiliLiveAPI;
-import net.dengzixu.body.AuthBody;
-import net.dengzixu.enums.Operation;
-import net.dengzixu.enums.ProtocolVersion;
-import net.dengzixu.packet.Packet;
-import net.dengzixu.packet.PacketBuilder;
+import net.dengzixu.bilvedanmaku.api.bilibili.live.BiliBiliLiveAPI;
+import net.dengzixu.bilvedanmaku.body.AuthBody;
+import net.dengzixu.bilvedanmaku.enums.Operation;
+import net.dengzixu.bilvedanmaku.enums.ProtocolVersion;
+import net.dengzixu.bilvedanmaku.packet.Packet;
+import net.dengzixu.bilvedanmaku.packet.PacketBuilder;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;

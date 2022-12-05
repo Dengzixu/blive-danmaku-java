@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'net.dengzixu'
-version '0.1-beta'
+version '0.1.2-beta'
 
 sourceCompatibility = 17
 targetCompatibility = 17

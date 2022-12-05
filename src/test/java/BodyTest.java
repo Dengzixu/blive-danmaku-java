@@ -1,8 +1,8 @@
-import net.dengzixu.body.AuthBody;
-import net.dengzixu.enums.Message;
-import net.dengzixu.message.body.SimpleMessageBody;
-import net.dengzixu.message.content.NullContent;
-import net.dengzixu.message.metadata.UserMetadata;
+import net.dengzixu.bilvedanmaku.body.AuthBody;
+import net.dengzixu.bilvedanmaku.enums.Message;
+import net.dengzixu.bilvedanmaku.message.body.SimpleMessageBody;
+import net.dengzixu.bilvedanmaku.message.content.NullContent;
+import net.dengzixu.bilvedanmaku.message.metadata.UserMetadata;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
