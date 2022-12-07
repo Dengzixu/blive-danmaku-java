@@ -18,8 +18,6 @@ public class GuardBugResolver extends AbstractDataResolver<GuardBuyContent> {
     public GuardBugResolver(Map<?, ?> bodyMap) {
         super(bodyMap);
 
-        System.out.println(bodyMap);
-
         if (bodyMap.get("data") instanceof Map<?, ?> dataMap) {
             this.dataMap = dataMap;
         } else {
