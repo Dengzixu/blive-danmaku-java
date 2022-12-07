@@ -84,8 +84,6 @@ public class BodyResolver {
                         CMD = "DANMU_MSG";
                     }
 
-                    System.out.println("B" + CMD);
-
 
                     // 获取对应的 Resolver
                     Class<?> clazz = DataResolverAnnotationProcessor.COMMAND_MAP.get(Command.valueOf(CMD));
