@@ -123,6 +123,7 @@ public final class BLiveDanmakuClient {
 
     /**
      * 移除 Handler
+     *
      * @param handler Handler 对象
      * @return BLiveDanmakuClient Chain
      */

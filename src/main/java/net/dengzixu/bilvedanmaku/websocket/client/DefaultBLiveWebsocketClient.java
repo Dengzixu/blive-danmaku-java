@@ -97,6 +97,13 @@ public class DefaultBLiveWebsocketClient extends BLiveWebsocketClient {
             return;
         }
 
+        // 等待 5 秒
+        try {
+            Thread.sleep(5 * 1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
         // 是否达到重连计数器重置时间
         if (bLiveWebsocketClientProfile.resetReconnectCounter() != -1
                 || System.currentTimeMillis() - lastConnectTime > bLiveWebsocketClientProfile.resetReconnectCounter()) {
@@ -110,7 +117,7 @@ public class DefaultBLiveWebsocketClient extends BLiveWebsocketClient {
             return;
         }
 
-        logger.info("[直播间: {}] 准备重新建立链接……({})", this.roomID, reconnectCounter.get());
+        logger.info("[直播间: {}] 准备第 {} 次重新建立链接……({})", this.roomID, reconnectCounter.get(), reconnectCounter.get());
 
         // 重新连接
         this.webSocket = okHttpClient.newWebSocket(this.request, this.webSocketListener);
