@@ -106,16 +106,18 @@ public class DefaultBLiveWebsocketClient extends BLiveWebsocketClient {
 
         // 是否达到重连计数器重置时间
         if (bLiveWebsocketClientProfile.resetReconnectCounter() != -1
-                || System.currentTimeMillis() - lastConnectTime > bLiveWebsocketClientProfile.resetReconnectCounter()) {
+                && System.currentTimeMillis() - lastConnectTime > bLiveWebsocketClientProfile.resetReconnectCounter()) {
             this.reconnectCounter.set(0);
         }
 
         // 重连次数是否超过最大次数
         if (this.bLiveWebsocketClientProfile.maxReconnectTryTimes() != -1
-                || reconnectCounter.incrementAndGet() > bLiveWebsocketClientProfile.maxReconnectTryTimes()) {
+                && reconnectCounter.incrementAndGet() > bLiveWebsocketClientProfile.maxReconnectTryTimes()) {
             logger.error("[直播间: {}] 超过重连最大次数({})，放弃重连", this.roomID, this.bLiveWebsocketClientProfile.maxReconnectTryTimes());
             return;
         }
+
+        lastConnectTime = System.currentTimeMillis();
 
         logger.info("[直播间: {}] 准备第 {} 次重新建立链接……({})", this.roomID, reconnectCounter.get(), reconnectCounter.get());
 
