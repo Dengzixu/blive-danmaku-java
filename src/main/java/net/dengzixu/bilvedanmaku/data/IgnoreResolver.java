@@ -17,6 +17,7 @@ import java.util.Map;
         Command.HOT_RANK_SETTLEMENT_V2,
         Command.LIVE_INTERACTIVE_GAME,
         Command.COMMON_NOTICE_DANMAKU,
+        Command.GUARD_HONOR_THOUSAND,
         Command.HOT_RANK_SETTLEMENT,
         Command.STOP_LIVE_ROOM_LIST,
         Command.HOT_RANK_CHANGED_V2,
