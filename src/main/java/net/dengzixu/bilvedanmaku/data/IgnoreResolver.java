@@ -12,6 +12,7 @@ import java.util.Map;
 
 @DataResolver(command = {
         Command.COMBO_SEND,
+        Command.POPULARITY_RED_POCKET_WINNER_LIST,
         Command.ROOM_REAL_TIME_MESSAGE_UPDATE,
         Command.POPULARITY_RED_POCKET_NEW,
         Command.WIDGET_GIFT_STAR_PROCESS,
