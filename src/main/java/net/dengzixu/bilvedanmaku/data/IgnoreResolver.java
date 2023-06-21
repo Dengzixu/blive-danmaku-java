@@ -23,6 +23,7 @@ import java.util.Map;
         Command.HOT_RANK_CHANGED_V2,
         Command.LIKE_INFO_V3_UPDATE,
         Command.LIKE_INFO_V3_CLICK,
+        Command.LIVE_PANEL_CHANGE,
         Command.ONLINE_RANK_COUNT,
         Command.DANMU_AGGREGATION,
         Command.HOT_RANK_CHANGED,
