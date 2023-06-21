@@ -14,6 +14,7 @@ import java.util.Map;
         Command.COMBO_SEND,
         Command.ROOM_REAL_TIME_MESSAGE_UPDATE,
         Command.POPULARITY_RED_POCKET_NEW,
+        Command.WIDGET_GIFT_STAR_PROCESS,
         Command.HOT_RANK_SETTLEMENT_V2,
         Command.LIVE_INTERACTIVE_GAME,
         Command.COMMON_NOTICE_DANMAKU,
