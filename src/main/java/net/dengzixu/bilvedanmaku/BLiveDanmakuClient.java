@@ -223,10 +223,15 @@ public final class BLiveDanmakuClient {
             public void auth(WebSocket webSocket) {
                 logger.info("[直播间: {}] 进行身份认证……", roomID);
 
-                // 获取 Token
                 BiliBiliLiveAPI biliBiliLiveAPI = new BiliBiliLiveAPI();
 
+                // 获取 Token
                 String token = (String) biliBiliLiveAPI.getConf(roomID).get("token");
+
+                // 获取房间对应的主播的 UID
+                long anchorUID = (int) biliBiliLiveAPI.roomInit(roomID).get("room_id");
+
+                logger.info("[直播间: {}] 主播 UID: {}", roomID, anchorUID);
 
                 // 构建 Packet
                 Packet packet = PacketBuilder.newBuilder()
