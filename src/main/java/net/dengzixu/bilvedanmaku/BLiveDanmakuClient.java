@@ -237,7 +237,7 @@ public final class BLiveDanmakuClient {
                 Packet packet = PacketBuilder.newBuilder()
                         .protocolVersion(ProtocolVersion.NORMAL)
                         .operation(Operation.USER_AUTHENTICATION)
-                        .body(new AuthBody(roomID, token).toJsonBytes())
+                        .body(new AuthBody(anchorUID, roomID, token).toJsonBytes())
                         .build();
 
                 // 发送 Packet
