@@ -83,7 +83,7 @@ public record Packet(Integer packetLength, Short headerLength, ProtocolVersion p
                 ", protocolVersion=" + protocolVersion +
                 ", operation=" + operation +
                 ", sequence=" + sequence +
-                ", body=" + (Operation.HEARTBEAT_REPLY.equals(operation) ? ByteBuffer.wrap(body).getInt() : new String(body)) +
+                ", body=" + (Operation.HEARTBEAT_REPLY.equals(operation) ? ByteBuffer.wrap(body).getInt() : null != body ? new String(body) : "null") +
                 '}';
     }
 }
