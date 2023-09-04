@@ -66,8 +66,15 @@ public class DefaultBLiveWebsocketClient extends BLiveWebsocketClient {
             logger.warn("无重连次数上限，可能会触发无限重连");
         }
 
+        // Socks Proxy
+//        java.net.Proxy proxy = new java.net.Proxy(java.net.Proxy.Type.SOCKS,
+//                new java.net.InetSocketAddress("127.0.0.1", 8889));
+
         // 创建 OkHttp Client
-        this.okHttpClient = new OkHttpClient();
+        this.okHttpClient = new OkHttpClient
+                .Builder()
+//                .proxy(proxy)
+                .build();
 
         // 构建请求
         this.request = new Request.Builder()
