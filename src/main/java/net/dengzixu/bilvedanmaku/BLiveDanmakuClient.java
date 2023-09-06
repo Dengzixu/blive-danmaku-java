@@ -1,5 +1,8 @@
 package net.dengzixu.bilvedanmaku;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import net.dengzixu.bilvedanmaku.api.bilibili.live.BiliBiliAPI;
 import net.dengzixu.bilvedanmaku.api.bilibili.live.BiliBiliLiveAPI;
 import net.dengzixu.bilvedanmaku.body.AuthBody;
 import net.dengzixu.bilvedanmaku.body.BodyResolver;
@@ -11,6 +14,7 @@ import net.dengzixu.bilvedanmaku.message.body.SimpleMessageBody;
 import net.dengzixu.bilvedanmaku.packet.Packet;
 import net.dengzixu.bilvedanmaku.packet.PacketBuilder;
 import net.dengzixu.bilvedanmaku.packet.PacketResolver;
+import net.dengzixu.bilvedanmaku.profile.BLiveAuthProfile;
 import net.dengzixu.bilvedanmaku.profile.BLiveServerProfile;
 import net.dengzixu.bilvedanmaku.profile.BLiveWebsocketClientProfile;
 import net.dengzixu.bilvedanmaku.websocket.client.BLiveWebsocketClient;
@@ -19,6 +23,7 @@ import okhttp3.Response;
 import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
 import okio.ByteString;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -39,10 +44,13 @@ public final class BLiveDanmakuClient {
 
     // 房间号
     private final Long roomID;
+    // 认证配置
+    private final BLiveAuthProfile bLiveAuthProfile;
     // 弹幕服务器配置
     private final BLiveServerProfile bLiveServerProfile;
     // Websocket 客户端配置
     private final BLiveWebsocketClientProfile bLiveWebsocketClientProfile;
+
 
     // Handler 列表
     private final CopyOnWriteArrayList<Handler> handlers = new CopyOnWriteArrayList<>();
@@ -56,9 +64,11 @@ public final class BLiveDanmakuClient {
     private static final ExecutorService executor = Executors.newCachedThreadPool();
 
     private BLiveDanmakuClient(Long roomID,
+                               BLiveAuthProfile bLiveAuthProfile,
                                BLiveServerProfile bLiveServerProfile,
                                BLiveWebsocketClientProfile bLiveWebsocketClientProfile) {
         this.roomID = roomID;
+        this.bLiveAuthProfile = bLiveAuthProfile;
         this.bLiveServerProfile = bLiveServerProfile;
         this.bLiveWebsocketClientProfile = bLiveWebsocketClientProfile;
 
@@ -76,6 +86,21 @@ public final class BLiveDanmakuClient {
      */
     public static BLiveDanmakuClient getInstance(Long roomID) {
         return getInstance(roomID,
+                BLiveAuthProfile.getAnonymous(),
+                BLiveServerProfile.getDefault(),
+                BLiveWebsocketClientProfile.getDefault());
+    }
+
+    /**
+     * 创建弹幕客户端
+     *
+     * @param roomID           房间号
+     * @param bLiveAuthProfile 认证信息
+     * @return BLiveDanmakuClient
+     */
+    public static BLiveDanmakuClient getInstance(Long roomID, BLiveAuthProfile bLiveAuthProfile) {
+        return getInstance(roomID,
+                bLiveAuthProfile,
                 BLiveServerProfile.getDefault(),
                 BLiveWebsocketClientProfile.getDefault());
     }
@@ -93,16 +118,31 @@ public final class BLiveDanmakuClient {
     /**
      * 创建弹幕客户端
      *
+     * @param roomID           房间号
+     * @param bLiveAuthProfile 认证信息
+     * @return BLiveDanmakuClient
+     */
+    public static BLiveDanmakuClient getInstance(long roomID, BLiveAuthProfile bLiveAuthProfile) {
+        return getInstance(Long.valueOf(roomID), bLiveAuthProfile);
+    }
+
+    /**
+     * 创建弹幕客户端
+     *
      * @param roomID                      房间号
      * @param bLiveServerProfile          弹幕服务器配置
      * @param bliveWebsocketClientProfile Websocket 客户端配置
      * @return BLiveDanmakuClient
      */
     public static BLiveDanmakuClient getInstance(Long roomID,
+                                                 BLiveAuthProfile bLiveAuthProfile,
                                                  BLiveServerProfile bLiveServerProfile,
                                                  BLiveWebsocketClientProfile bliveWebsocketClientProfile) {
         if (null == instanceMap.get(roomID)) {
-            instanceMap.put(roomID, new BLiveDanmakuClient(roomID, bLiveServerProfile, bliveWebsocketClientProfile));
+            instanceMap.put(roomID, new BLiveDanmakuClient(roomID,
+                    bLiveAuthProfile,
+                    bLiveServerProfile,
+                    bliveWebsocketClientProfile));
         }
 
         return instanceMap.get(roomID);
@@ -199,12 +239,6 @@ public final class BLiveDanmakuClient {
                         }));
 
                     } catch (Exception e) {
-//                        logger.error("[直播间: {}] 发生未知错误。\nPacket:{}\n原始数据(Base64):{}\n原始数据(Bytes):{}",
-//                                roomID,
-//                                packet,
-//                                Base64.encodeBase64String(bytes.toByteArray()),
-//                                Hex.encodeHexString(bytes.toByteArray()),
-//                                e);
                         logger.error("[直播间: {}] 发生未知错误。\nPacket:{}",
                                 roomID,
                                 packet,
@@ -217,32 +251,59 @@ public final class BLiveDanmakuClient {
             public void onOpen(@NotNull WebSocket webSocket, @NotNull Response response) {
                 logger.info("[直播间: {}] 准备建立链接", roomID);
 
-                this.auth(webSocket);
+                try {
+                    this.auth(webSocket);
+                } catch (Exception e) {
+                    logger.error("[直播间: {}] 认证失败", roomID, e);
+                }
+
             }
 
-            public void auth(WebSocket webSocket) {
+            public void auth(WebSocket webSocket) throws Exception {
                 logger.info("[直播间: {}] 进行身份认证……", roomID);
 
                 BiliBiliLiveAPI biliBiliLiveAPI = new BiliBiliLiveAPI();
+                BiliBiliAPI biliBiliAPI = new BiliBiliAPI();
 
                 // 获取 Token
-                String token = (String) biliBiliLiveAPI.getConf(roomID).get("token");
+                JsonNode danmuInfoJsonNode = new ObjectMapper()
+                        .readValue(biliBiliLiveAPI.getDanmuInfo(roomID, bLiveAuthProfile.sessData()), JsonNode.class);
+                String token = danmuInfoJsonNode.get("data").get("token").asText();
 
                 // 获取房间对应的主播的 UID
-                long anchorUID = (int) biliBiliLiveAPI.roomInit(roomID).get("room_id");
+//                long anchorUID = (int) biliBiliLiveAPI.roomInit(roomID).get("room_id");
+//                logger.info("[直播间: {}] 主播 UID: {}", roomID, anchorUID);
 
-                logger.info("[直播间: {}] 主播 UID: {}", roomID, anchorUID);
+                Long authUID = bLiveAuthProfile.uid();
+                // 判断 UID 为 0 时，或 sessData 为空时，如果未设置，UID 取 0
+                if (authUID.equals(0L) || StringUtils.isBlank(bLiveAuthProfile.sessData())) {
+                    logger.warn("[直播间: {}] 未设置认证 UID，使用匿名模式。建议正确配置 UID 与 SESSDATA 避免出现连接中断等问题。", roomID);
+                    authUID = 0L;
+                } else if (!authUID.equals(0L) && StringUtils.isBlank(bLiveAuthProfile.sessData())) {
+                    logger.warn("[直播间: {}] 已设置认证 UID，但未设置 SESSDATA，使用匿名模式。建议正确配置 UID 与 SESSDATA 避免出现连接中断等问题", roomID);
+
+                    authUID = 0L;
+                }
+                logger.info("[直播间: {}] 使用认证 UID: {}", roomID, authUID);
+
+
+                // 获取 buvid3
+
+                JsonNode spiJsonNode = new ObjectMapper()
+                        .readValue(biliBiliAPI.spi(), JsonNode.class);
+
+                String buvid = spiJsonNode.get("data").get("b_3").asText();
+                logger.info("[直播间: {}] 获取到 buvid: {}", roomID, buvid);
 
                 // 构建 Packet
                 Packet packet = PacketBuilder.newBuilder()
-                        .protocolVersion(ProtocolVersion.NORMAL)
+                        .protocolVersion(ProtocolVersion.HEARTBEAT)
                         .operation(Operation.USER_AUTHENTICATION)
-                        .body(new AuthBody(anchorUID, roomID, token).toJsonBytes())
+                        .body(new AuthBody(authUID, roomID, buvid, token).toJsonBytes())
                         .build();
 
                 // 发送 Packet
                 webSocket.send(new ByteString(packet.getBytes()));
-
                 // 发送心跳包
                 websocketClient.startHeartbeat();
             }

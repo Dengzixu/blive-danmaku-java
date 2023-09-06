@@ -40,8 +40,8 @@ public class RetrofitUtils {
         return retrofit.create(service);
     }
 
-    public static Map<String, Object> sendRequest(Call<Map<String, Object>> call) throws IOException {
-        Response<Map<String, Object>> response = call.execute();
+    public static <T>T sendRequest(Call<T> call) throws IOException {
+        Response<T> response = call.execute();
 
         return response.body();
     }

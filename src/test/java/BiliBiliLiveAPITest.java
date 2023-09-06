@@ -15,4 +15,9 @@ public class BiliBiliLiveAPITest {
     void testGetConf() {
         System.out.println(biliBiliLiveAPI.getConf(ROOM_ID));
     }
+
+    @Test
+    void testGetDanmuInfo() {
+        System.out.println(biliBiliLiveAPI.getDanmuInfo(ROOM_ID, ""));
+    }
 }
